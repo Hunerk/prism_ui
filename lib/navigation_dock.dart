@@ -21,15 +21,15 @@ import 'package:flutter/widgets.dart';
 
 import 'liquid_glass.dart';
 
-const double _barHeight = 62;
+const double _barHeight = 52.5;
 const double _barPadding = 4;
-const double _edgeMargin = 21;
+const double _edgeMargin = 12;
 const double _shadowRoom = 8;
 const double _hitSlop = 8;
-const double _maxItemExtent = 86;
+const double _maxItemExtent = 64.6;
 const double _minLensWidth = 84;
 const _fullWidthCount = 5;
-const double _iconSize = 28;
+const double _iconSize = 22;
 const double _labelGap = 2;
 const double _labelInset = 2;
 const double _labelSize = 10;
@@ -143,7 +143,7 @@ Rect _lensRect({
   if (pitch + _barPadding * 2 >= _minLensWidth) {
     return (pitch: pitch, lens: pitch + _barPadding * 2, inset: _barPadding);
   }
-  final lens = math.min(_minLensWidth, span);
+  final lens = math.min(_minLensWidth, pitch + _barPadding * 2);
   final closed = (span - lens) / (count - 1);
   return (pitch: closed, lens: lens, inset: (lens - closed) / 2);
 }
@@ -1689,29 +1689,13 @@ class _FloatingBarItemState extends State<_FloatingBarItem> {
       textDirection: Directionality.of(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: _labelInset),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GlyphIcon(
-              widget.destination.glyph,
-              size: _iconSize,
-              color: color,
-              fill: 1,
-            ),
-            const SizedBox(height: _labelGap),
-            SizedBox(
-              height: widget.labelHeight,
-              child: Center(
-                child: Text(
-                  widget.destination.label,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: widget.labelStyle?.copyWith(color: color),
-                ),
-              ),
-            ),
-          ],
+        child: Center(
+          child: GlyphIcon(
+            widget.destination.glyph,
+            size: _iconSize,
+            color: color,
+            fill: 1,
+          ),
         ),
       ),
     );
