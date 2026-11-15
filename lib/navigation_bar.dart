@@ -64,7 +64,7 @@ class _Destination extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  static const _indicator = Size(64, 32);
+  static const _indicator = Size(64, 26);
   static const _motion = Duration(milliseconds: 500);
 
   @override
@@ -116,8 +116,10 @@ class _Destination extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              destination.label,
+            Transform.translate(
+              offset: const Offset(0, -2),
+              child: Text(
+                destination.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyle.caption1
@@ -127,7 +129,8 @@ class _Destination extends StatelessWidget {
                     color: selected
                         ? colorScheme.onSurface
                         : colorScheme.onSurfaceVariant,
-                  ),
+                    ),
+              ),
             ),
           ],
         ),
