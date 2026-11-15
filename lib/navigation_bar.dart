@@ -79,7 +79,7 @@ class _Destination extends StatelessWidget {
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 4,
+          spacing: 1,
           children: [
             SizedBox.fromSize(
               size: _indicator,
@@ -120,17 +120,17 @@ class _Destination extends StatelessWidget {
               offset: const Offset(0, -2),
               child: Text(
                 destination.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.caption1
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyle.caption1
                   .of(context, emphasized: true)
                   .copyWith(
                     fontSize: AppTextStyle.caption1.of(context, emphasized: true).fontSize ?? 12,
                     color: selected
                         ? colorScheme.onSurface
                         : colorScheme.onSurfaceVariant,
-                    ),
-              ),
+                  ),
+                ),
             ),
           ],
         ),
