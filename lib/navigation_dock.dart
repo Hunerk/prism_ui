@@ -22,22 +22,22 @@ import 'package:flutter/widgets.dart';
 import 'liquid_glass.dart';
 
 const double _barHeight = 52.5;
-const double _barPadding = 3.8;
+const double _barPadding = 3.72;
 const double _edgeMargin = 12;
 const double _shadowRoom = 8;
 const double _hitSlop = 8;
-const double _maxItemExtent = 61.37;
-const double _minLensWidth = 79.8;
+const double _maxItemExtent = 60.078;
+const double _minLensWidth = 78.12;
 const _fullWidthCount = 5;
-const double _iconSize = 20.9;
-const double _labelGap = 1.9;
-const double _labelInset = 1.9;
-const double _labelSize = 9.5;
-const double _labelLeading = 13.775;
-const double _minLabelSize = 8.55;
+const double _iconSize = 20.46;
+const double _labelGap = 1.86;
+const double _labelInset = 1.86;
+const double _labelSize = 9.3;
+const double _labelLeading = 13.485;
+const double _minLabelSize = 8.37;
 const double _pressGrowth = 1 / 8;
 const double _maxPressGrowth = 16;
-const double _lensGrowth = 7.6;
+const double _lensGrowth = 7.44;
 const double _lensMagnify = 0.16;
 const double _liftSnap = 0.975;
 const double _liftRelease = 0.04;
@@ -355,10 +355,10 @@ class NavigationDock extends StatelessWidget {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: destinations.length >= _fullWidthCount
-                          ? MediaQuery.sizeOf(context).width * 0.95
+                          ? MediaQuery.sizeOf(context).width * 0.93
                           : (destinations.length * _maxItemExtent +
                                     _barPadding * 4) *
-                                0.95,
+                                0.93,
                     ),
                     child: FloatingNavigationBar(
                       destinations: destinations,
