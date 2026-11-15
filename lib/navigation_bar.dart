@@ -64,7 +64,7 @@ class _Destination extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  static const _indicator = Size(64, 32);
+  static const _indicator = Size(54.4, 27.2);
   static const _motion = Duration(milliseconds: 500);
 
   @override
@@ -79,7 +79,7 @@ class _Destination extends StatelessWidget {
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 4,
+          spacing: 3.4,
           children: [
             SizedBox.fromSize(
               size: _indicator,
@@ -106,7 +106,7 @@ class _Destination extends StatelessWidget {
                   ),
                   IconTheme.merge(
                     data: IconThemeData(
-                      size: 24,
+                      size: 20.4,
                       color: selected
                           ? colorScheme.primary
                           : colorScheme.onSurfaceVariant,
@@ -123,6 +123,7 @@ class _Destination extends StatelessWidget {
               style: AppTextStyle.caption1
                   .of(context, emphasized: true)
                   .copyWith(
+                    fontSize: (AppTextStyle.caption1.of(context, emphasized: true).fontSize ?? 12) * 0.85,
                     color: selected
                         ? colorScheme.onSurface
                         : colorScheme.onSurfaceVariant,
