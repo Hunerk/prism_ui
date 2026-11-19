@@ -22,13 +22,13 @@ import 'package:flutter/widgets.dart';
 import 'liquid_glass.dart';
 
 const double _barHeight = 52.5;
-const double _dockWidthScale = 0.95;
+const double _barWidthScale = 0.95;
 const double _barPadding = 3.72;
 const double _edgeMargin = 12;
 const double _shadowRoom = 8;
 const double _hitSlop = 8;
 const double _maxItemExtent = 60.078;
-const double _minLensWidth = 74.214;
+const double _minLensWidth = 78.12;
 const _fullWidthCount = 5;
 const double _iconSize = 20.46;
 const double _labelInset = 1.86;
@@ -345,16 +345,16 @@ class NavigationDock extends StatelessWidget {
             children: [
               Flexible(
                 child: _HitSlop(
-                  child: FractionallySizedBox(
-                    widthFactor: _dockWidthScale,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: destinations.length >= _fullWidthCount
-                            ? double.infinity
-                            : (destinations.length * _maxItemExtent +
-                                      _barPadding * 4) *
-                                  _dockWidthScale,
-                      ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: destinations.length >= _fullWidthCount
+                          ? double.infinity
+                          : destinations.length * _maxItemExtent +
+                                _barPadding * 4,
+                    ),
+                    child: Transform.scale(
+                      scaleX: _barWidthScale,
+                      alignment: Alignment.center,
                       child: FloatingNavigationBar(
                         destinations: destinations,
                         selectedIndex: selectedIndex,
