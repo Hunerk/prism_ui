@@ -143,7 +143,7 @@ Rect _lensRect({
   if (pitch + _barPadding * 2 >= _minLensWidth) {
     return (pitch: pitch, lens: pitch + _barPadding * 2, inset: _barPadding);
   }
-  final lens = math.min(_minLensWidth, pitch + _barPadding * 2);
+  final lens = math.min(_minLensWidth, span);
   final closed = (span - lens) / (count - 1);
   return (pitch: closed, lens: lens, inset: (lens - closed) / 2);
 }
@@ -355,10 +355,9 @@ class NavigationDock extends StatelessWidget {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: destinations.length >= _fullWidthCount
-                          ? MediaQuery.sizeOf(context).width * 0.93
-                          : (destinations.length * _maxItemExtent +
-                                    _barPadding * 4) *
-                                0.93,
+                          ? double.infinity
+                          : destinations.length * _maxItemExtent +
+                                _barPadding * 4,
                     ),
                     child: FloatingNavigationBar(
                       destinations: destinations,
@@ -1690,13 +1689,29 @@ class _FloatingBarItemState extends State<_FloatingBarItem> {
       textDirection: Directionality.of(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: _labelInset),
-        child: Center(
-          child: GlyphIcon(
-            widget.destination.glyph,
-            size: _iconSize,
-            color: color,
-            fill: 1,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GlyphIcon(
+              widget.destination.glyph,
+              size: _iconSize,
+              color: color,
+              fill: 1,
+            ),
+            const SizedBox(height: _labelGap),
+            SizedBox(
+              height: widget.labelHeight,
+              child: Center(
+                child: Text(
+                  widget.destination.label,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: widget.labelStyle?.copyWith(color: color),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
