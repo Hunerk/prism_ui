@@ -30,7 +30,7 @@ const double _hitSlop = 8;
 const double _maxItemExtent = 60.078;
 const double _minLensWidth = 78.12;
 const _fullWidthCount = 5;
-const double _iconSize = 20.46;
+const double _iconSize = 22.51;
 const double _labelInset = 1.86;
 const double _pressGrowth = 1 / 8;
 const double _maxPressGrowth = 16;
@@ -117,8 +117,8 @@ Rect _lensRect({
   required double lift,
 }) {
   final growth = _lensGrowth * 2 * lift;
-  final lensWidth = (width + growth) * (1 + stretch);
-  final lensHeight = (height + growth) * (1 - stretch * _jellyAspect);
+  final lensWidth = (width + growth) * (1 + stretch) * 0.85;
+  final lensHeight = (height + growth) * (1 - stretch * _jellyAspect) * 0.85;
   return Rect.fromLTWH(
     (position + 0.5) * pitch - lensWidth / 2,
     (height - lensHeight) / 2,
