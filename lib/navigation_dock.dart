@@ -22,19 +22,16 @@ import 'package:flutter/widgets.dart';
 import 'liquid_glass.dart';
 
 const double _barHeight = 52.5;
+const double _dockWidthScale = 0.95;
 const double _barPadding = 3.72;
 const double _edgeMargin = 12;
 const double _shadowRoom = 8;
 const double _hitSlop = 8;
 const double _maxItemExtent = 60.078;
-const double _minLensWidth = 78.12;
+const double _minLensWidth = 74.214;
 const _fullWidthCount = 5;
 const double _iconSize = 20.46;
-const double _labelGap = 1.86;
 const double _labelInset = 1.86;
-const double _labelSize = 9.3;
-const double _labelLeading = 13.485;
-const double _minLabelSize = 8.37;
 const double _pressGrowth = 1 / 8;
 const double _maxPressGrowth = 16;
 const double _lensGrowth = 7.44;
@@ -320,11 +317,7 @@ class NavigationDock extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelected;
 
-  static double heightOf(BuildContext context) {
-    return _barHeight +
-        MediaQuery.textScalerOf(context).scale(_labelSize) -
-        _labelSize;
-  }
+  static double heightOf(BuildContext context) => _barHeight;
 
   static double _bottomMarginOf(BuildContext context) =>
       math.max(_edgeMargin, MediaQuery.paddingOf(context).bottom);
@@ -352,17 +345,21 @@ class NavigationDock extends StatelessWidget {
             children: [
               Flexible(
                 child: _HitSlop(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: destinations.length >= _fullWidthCount
-                          ? double.infinity
-                          : destinations.length * _maxItemExtent +
-                                _barPadding * 4,
-                    ),
-                    child: FloatingNavigationBar(
-                      destinations: destinations,
-                      selectedIndex: selectedIndex,
-                      onSelected: onSelected,
+                  child: FractionallySizedBox(
+                    widthFactor: _dockWidthScale,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: destinations.length >= _fullWidthCount
+                            ? double.infinity
+                            : (destinations.length * _maxItemExtent +
+                                      _barPadding * 4) *
+                                  _dockWidthScale,
+                      ),
+                      child: FloatingNavigationBar(
+                        destinations: destinations,
+                        selectedIndex: selectedIndex,
+                        onSelected: onSelected,
+                      ),
                     ),
                   ),
                 ),
@@ -1248,24 +1245,6 @@ class _FloatingNavigationBarState extends State<FloatingNavigationBar>
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final labelStyle = AppTextStyle.custom(
-      context,
-      size: _labelSize,
-      leading: _labelLeading,
-      weight: FontWeight.w500,
-    );
-    final labels = [
-      for (final destination in widget.destinations)
-        _measureLabel(context, destination.label, labelStyle),
-    ];
-    final widest = labels.fold(
-      0.0,
-      (width, label) => math.max(width, label.width),
-    );
-    final lineHeight = labels.fold(
-      0.0,
-      (height, label) => math.max(height, label.height),
-    );
     final glass = LiquidGlassScope.of(context);
     final ultra =
         LiquidGlassScope.qualityOf(context) == LiquidGlassQuality.ultra;
@@ -1300,10 +1279,6 @@ class _FloatingNavigationBarState extends State<FloatingNavigationBar>
                       constraints.maxWidth,
                       widget.destinations.length,
                     );
-                    final room = layout.pitch - _labelInset * 2;
-                    final labelScale = widest <= room
-                        ? 1.0
-                        : math.max(room / widest, _minLabelSize / _labelSize);
                     Rect lensRect() => _lensRect(
                       position: _lens.value,
                       stretch: _jelly.value,
@@ -1329,12 +1304,6 @@ class _FloatingNavigationBarState extends State<FloatingNavigationBar>
                                 jelly: _jelly,
                                 parallax: _parallax[index],
                                 lift: _lift,
-                                labelStyle: labelStyle.copyWith(
-                                  fontSize: _labelSize * labelScale,
-                                ),
-                                labelHeight: lineHeight,
-                                labelOverflows:
-                                    labels[index].width * labelScale > room,
                                 onActivate: () => widget.onSelected(index),
                               ),
                             ),
@@ -1623,9 +1592,6 @@ class _FloatingBarItem extends StatefulWidget {
     required this.jelly,
     required this.parallax,
     required this.lift,
-    required this.labelStyle,
-    required this.labelHeight,
-    required this.labelOverflows,
     required this.onActivate,
   });
 
@@ -1641,9 +1607,6 @@ class _FloatingBarItem extends StatefulWidget {
   final ValueListenable<double> jelly;
   final ValueListenable<double> parallax;
   final ValueListenable<double> lift;
-  final TextStyle? labelStyle;
-  final double labelHeight;
-  final bool labelOverflows;
   final VoidCallback onActivate;
 
   @override
@@ -1687,31 +1650,12 @@ class _FloatingBarItemState extends State<_FloatingBarItem> {
       index: widget.index,
       color: tint,
       textDirection: Directionality.of(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: _labelInset),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GlyphIcon(
-              widget.destination.glyph,
-              size: _iconSize,
-              color: color,
-              fill: 1,
-            ),
-            const SizedBox(height: _labelGap),
-            SizedBox(
-              height: widget.labelHeight,
-              child: Center(
-                child: Text(
-                  widget.destination.label,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: widget.labelStyle?.copyWith(color: color),
-                ),
-              ),
-            ),
-          ],
+      child: Center(
+        child: GlyphIcon(
+          widget.destination.glyph,
+          size: _iconSize,
+          color: color,
+          fill: 1,
         ),
       ),
     );
@@ -1738,9 +1682,7 @@ class _FloatingBarItemState extends State<_FloatingBarItem> {
               side: _focused ? focusRingSide(colorScheme) : BorderSide.none,
             ),
           ),
-          child: widget.labelOverflows
-              ? Tooltip(message: widget.destination.label, child: content)
-              : content,
+          child: content,
         ),
       ),
     );
