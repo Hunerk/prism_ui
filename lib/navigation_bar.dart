@@ -25,7 +25,7 @@ class NavigationBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
 
-  static const _height = 80.0;
+  static const _height = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _Destination extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  static const _indicator = Size(64, 32);
+  static const _indicator = Size(64, 26);
   static const _motion = Duration(milliseconds: 500);
 
   @override
@@ -79,7 +79,7 @@ class _Destination extends StatelessWidget {
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 4,
+          spacing: 1,
           children: [
             SizedBox.fromSize(
               size: _indicator,
@@ -116,17 +116,20 @@ class _Destination extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              destination.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.caption1
-                  .of(context, emphasized: true)
-                  .copyWith(
-                    color: selected
-                        ? colorScheme.onSurface
-                        : colorScheme.onSurfaceVariant,
-                  ),
+            Transform.translate(
+              offset: const Offset(0, -2),
+              child: Text(
+                destination.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyle.caption1
+                    .of(context, emphasized: true)
+                    .copyWith(
+                      color: selected
+                          ? colorScheme.onSurface
+                          : colorScheme.onSurfaceVariant,
+                    ),
+              ),
             ),
           ],
         ),
