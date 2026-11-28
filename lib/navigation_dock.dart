@@ -125,7 +125,7 @@ double _saturate(double value) => 1 - 2 / (math.exp(2 * value) + 1);
 // 0.9.5 lens sizes relative to the original calculated lens.
 Rect _customLensRect(Rect rect, double lift) {
   final t = lift.clamp(0.0, 1.0).toDouble();
-  final widthScale = lerpDouble(0.85, 0.85 * 0.90, t)!;
+  final widthScale = lerpDouble(0.88, 0.85 * 0.90, t)!;
   final heightScale = lerpDouble(0.85, 0.85 * 0.90, t)!;
   return Rect.fromCenter(
     center: rect.center,
