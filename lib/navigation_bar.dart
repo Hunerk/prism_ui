@@ -31,7 +31,7 @@ class NavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     return Surface(
-      color: SurfaceLevel.floatingOf(colorScheme).colorOf(colorScheme),
+      color: const Color(0xFFF7F7F7),
       child: SafeArea(
         child: SizedBox(
           height: _height,
@@ -106,7 +106,7 @@ class _Destination extends StatelessWidget {
                   ),
                   IconTheme.merge(
                     data: IconThemeData(
-                      size: 24,
+                      size: 21.6,
                       color: selected
                           ? colorScheme.primary
                           : colorScheme.onSurfaceVariant,
