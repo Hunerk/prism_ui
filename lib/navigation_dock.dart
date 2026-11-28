@@ -22,26 +22,28 @@ import 'package:flutter/widgets.dart';
 
 import 'liquid_glass.dart';
 
-const double _barHeight = 62;
-const double _barPadding = 4;
-const double _edgeMargin = 21;
+const double _barHeight = 52.5;
+const double _barPadding = 3.72;
+const double _edgeMargin = 12;
 const double _shadowRoom = 8;
 const double _hitSlop = 8;
-const double _maxItemExtent = 86;
+const double _maxItemExtent = 60.078;
 const double _minCell = 54;
 const double _titleRoom = 12;
 // UIKit overlaps crowded destinations by 20, which reads as cramped under an
 // English bar 375 wide; the uncrowded overlap keeps them apart.
 const double _crowdedOverlap = 8.25;
-const double _minFourLens = 94;
+const double _minFourLens = 78.12;
 const _fullWidthCount = 5;
 // The widest iPhone: five destinations fill its row, and a wider window
 // centers a bar as wide as that row.
 const double _widestPhone = 440;
-const double _iconSize = 28;
+const double _iconSize = 22.51;
 const double _labelGap = 1;
 const double _labelInset = 2;
 const double _labelSize = 10;
+const bool _showDockLabels = false;
+const double _fourItemBarWidth = 242;
 const double _labelLeading = 12;
 const double _contentLift = 1;
 const double _minLabelSize = 9;
@@ -119,6 +121,18 @@ double _rubberBand(double overshoot, double limit) {
 }
 
 double _saturate(double value) => 1 - 2 / (math.exp(2 * value) + 1);
+
+// 0.9.5 lens sizes relative to the original calculated lens.
+Rect _customLensRect(Rect rect, double lift) {
+  final t = lift.clamp(0.0, 1.0);
+  final widthScale = lerpDouble(0.85 * 0.95, 0.85 * 0.90, t)!;
+  final heightScale = lerpDouble(0.85, 0.85 * 0.90, t)!;
+  return Rect.fromCenter(
+    center: rect.center,
+    width: rect.width * widthScale,
+    height: rect.height * heightScale,
+  );
+}
 
 /// Where the destinations rest along the bar: each takes a cell, the cells
 /// tiling the bar between [inset]s, and its lens rests centered on its cell.
@@ -580,6 +594,8 @@ class NavigationDock extends StatelessWidget {
                     constraints: BoxConstraints(
                       maxWidth: destinations.length >= _fullWidthCount
                           ? _widestPhone - _edgeMargin * 2
+                          : destinations.length == 4
+                          ? _fourItemBarWidth
                           : destinations.length * _maxItemExtent +
                                 _barPadding * 4,
                     ),
@@ -1568,11 +1584,14 @@ class _FloatingNavigationBarState extends State<FloatingNavigationBar>
                       labelScale,
                       _minLabelSize / _labelSize,
                     );
-                    Rect lensRect() => layout.lensRect(
-                      position: _lens.value,
-                      stretch: _jelly.value,
-                      height: constraints.maxHeight,
-                      lift: _lift.value,
+                    Rect lensRect() => _customLensRect(
+                      layout.lensRect(
+                        position: _lens.value,
+                        stretch: _jelly.value,
+                        height: constraints.maxHeight,
+                        lift: _lift.value,
+                      ),
+                      _lift.value,
                     );
                     Widget items(_LensPart part) => Padding(
                       padding: EdgeInsets.symmetric(horizontal: layout.inset),
@@ -1966,19 +1985,21 @@ class _FloatingBarItemState extends State<_FloatingBarItem> {
               color: color,
               fill: 1,
             ),
-            const SizedBox(height: _labelGap),
-            SizedBox(
-              height: widget.labelHeight,
-              child: Center(
-                child: Text(
-                  widget.destination.label,
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: widget.labelStyle?.copyWith(color: color),
+            if (_showDockLabels) ...[
+              const SizedBox(height: _labelGap),
+              SizedBox(
+                height: widget.labelHeight,
+                child: Center(
+                  child: Text(
+                    widget.destination.label,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    style: widget.labelStyle?.copyWith(color: color),
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -2226,21 +2247,23 @@ class _RenderLensTint extends RenderProxyBox {
   }
 
   Rect get _lensBounds {
-    final rect = _slots
-        .lensRect(
-          position: _lens.value,
-          stretch: _jelly.value,
-          height: size.height,
-          lift: _lift.value,
-        )
-        .shift(Offset(-_slots.cellStart(_index), 0));
+    final rect = _slots.lensRect(
+      position: _lens.value,
+      stretch: _jelly.value,
+      height: size.height,
+      lift: _lift.value,
+    );
+    final scaled = _customLensRect(
+      rect,
+      _lift.value,
+    ).shift(Offset(-_slots.cellStart(_index), 0));
     return _textDirection == TextDirection.ltr
-        ? rect
+        ? scaled
         : Rect.fromLTRB(
-            size.width - rect.right,
-            rect.top,
-            size.width - rect.left,
-            rect.bottom,
+            size.width - scaled.right,
+            scaled.top,
+            size.width - scaled.left,
+            scaled.bottom,
           );
   }
 
